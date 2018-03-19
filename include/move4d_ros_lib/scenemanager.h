@@ -9,18 +9,17 @@
 #include <geometry_msgs/Pose.h>
 
 /**
- * @namespace move3d
- * @brief The base namespace of the move3d_ros_lib
+ * @namespace move4d
+ * @brief The base namespace of the move4d_ros_lib
  */
-
-class Project;
-namespace move3d
+namespace move4d
 {
+class Project;
 class HumanMgr;
 
 /**
- * @brief The SceneManager class provide interface between ROS and the move3d scene and project.
- * Use it to start libmove3d and place the robots and objects in the environment.
+ * @brief The SceneManager class provide interface between ROS and the move4d scene and project.
+ * Use it to start libmove4d and place the robots and objects in the environment.
  */
 class SceneManager
 {
@@ -40,7 +39,7 @@ public:
     ~SceneManager();
 
     /**
-     * @brief add a move3d module to be initialized
+     * @brief add a move4d module to be initialized
      * @param name name of the module
      * @return true on success, false otherwise.
      *
@@ -50,12 +49,12 @@ public:
     bool addModule(const std::string &name);
 
     /**
-     * @brief create the move3d scene and project.
+     * @brief create the move4d scene and project.
      * @return false on error
      *
      * A path to a p3d file must be given in the constructor or with setP3dPath().
      * To add a module, you need to call addModule() before  createScene().
-     * This is required in order to use most of the components of move3d.
+     * This is required in order to use most of the components of move4d.
      * @see setProject allows to set a already initialized project
      */
     bool createScene();
@@ -78,7 +77,7 @@ public:
     /**
      * @brief update a robot configuration (any moveable object).
      * @param name name of the robot to place
-     * @param dof_values value of all the degrees of freedom (ordered as in move3d)
+     * @param dof_values value of all the degrees of freedom (ordered as in move4d)
      * @return
      * The position of the 1st joint is specified as the first 6 DoFs
      * of the vector: (x,y,z,rx,ry,rz)
@@ -92,17 +91,17 @@ public:
      * @param name name of the human in ROS
      * @param base_pose position of the base joint of the human
      * @param joints other joint positions (not configuration) in an absolute frame
-     * @return false if the human is not found in the HumanMgr settings or in the move3d scene, or if the configuration cannot be computed
+     * @return false if the human is not found in the HumanMgr settings or in the move4d scene, or if the configuration cannot be computed
      * @see HumanMgr
      */
     bool updateHuman(const std::string &name, const geometry_msgs::Pose &base_pose, const std::map<std::string,geometry_msgs::Pose> &joints);
 
     /**
-     * @brief set the matching of ROS DoF names and move3d ones.
+     * @brief set the matching of ROS DoF names and move4d ones.
      * @param robot_name the name of the robot
-     * @param ros_to_move3d_map keys are the name of the joints in ROS, values are the corresponding names in move3d.
+     * @param ros_to_move4d_map keys are the name of the joints in ROS, values are the corresponding names in move4d.
      */
-    void setDofCorresp(const std::string &robot_name, const std::map<std::string,std::string> &ros_to_move3d_map);
+    void setDofCorresp(const std::string &robot_name, const std::map<std::string,std::string> &ros_to_move4d_map);
     /**
      * @brief set the DoF order as it will be when calling any updateRobot method.
      * @param robot_name the name of the robot
@@ -116,13 +115,13 @@ public:
     /**
      * @brief retrieve map of joint/dof correspondances
      * @param param_name where the dictionnary is located in the ROS parameter server
-     * @param robot_name the (complete) name of the robot in move3d
+     * @param robot_name the (complete) name of the robot in move4d
      * @return false if the project is not correctly initialized. Empty or non-existent map is ok.
      *
      * The dictionnary in ROS parameters have the form:
      * ~~~{.yaml}
      * param_name : {
-     *      ros_joint_name: move3d_joint_name,
+     *      ros_joint_name: move4d_joint_name,
      * }
      * ~~~
      *
@@ -131,7 +130,7 @@ public:
      * ~~~{.yaml}
      *
      * ---
-     * move3d:
+     * move4d:
      * dof_name_corresp: {
      *    PR2_ROBOT: {
      *      torso_lift_link: Torso,
@@ -155,8 +154,8 @@ public:
     bool fetchDofCorrespParam(const std::string &base_param_name);
 
     /**
-     * @brief convert a configuration from ROS to move3d.
-     * Only changes joint order, and remove joints that do not exist in Move3d.
+     * @brief convert a configuration from ROS to move4d.
+     * Only changes joint order, and remove joints that do not exist in move4d.
      * @param[in] robot_name
      * @param[in] ros_conf
      * @param[out] m3d_conf
@@ -189,7 +188,7 @@ public:
      * @brief save the scenario, ie. the positions and configurations of all objects and robots
      * @param path the path where to save the scenario
      * @return true on success
-     * The created scenario (.sce) is compatible with any move3d instance, as move3d-studio.
+     * The created scenario (.sce) is compatible with any move4d instance, as move4d-studio.
      */
     bool saveScenario(const std::string &path);
 
@@ -218,13 +217,13 @@ public:
     //getter / setters
 
     /**
-     * @brief get the move3d project object
+     * @brief get the move4d project object
      * @return
      */
     Project *project() const;
     /**
      * @brief set a project instead of creating it with createScene
-     * @param project a move3d project
+     * @param project a move4d project
      * @see createScene handles the creation of the project
      */
     void setProject(Project *project);

@@ -1,20 +1,21 @@
-#include "move3d_ros_lib/plugins/head_hand_updater.h"
+#undef QT_LIBRARY
+#include "move4d_ros_lib/plugins/head_hand_updater.h"
 
 #include <ros/ros.h>
 
-#include <libmove3d/planners/API/Device/robot.hpp>
-#include <libmove3d/planners/API/Device/joint.hpp>
-#include <libmove3d/planners/utils/Geometry.h>
-#include <libmove3d/planners/API/ConfigSpace/RobotState.hpp>
+#include <move4d/API/Device/robot.hpp>
+#include <move4d/API/Device/joint.hpp>
+#include <move4d/utils/Geometry.h>
+#include <move4d/API/ConfigSpace/RobotState.hpp>
 
 #include <pluginlib/class_list_macros.h>
 
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 
-PLUGINLIB_EXPORT_CLASS(move3d::HeadHandUpdater, move3d::BaseHumanUpdater)
+PLUGINLIB_EXPORT_CLASS(move4d::HeadHandUpdater, move4d::BaseHumanUpdater)
 
-namespace move3d {
+namespace move4d {
 
 typedef std::map<std::string, Eigen::Affine3d>::const_iterator AffineMapConstIterator;
 
@@ -50,11 +51,11 @@ bool HeadHandUpdater::computeConf(Robot *h, const Eigen::Affine3d &base, const s
     //tf for debug
     tf::Transform tr;
     tr.setFromOpenGLMatrix(base.data());
-    _tf_br->sendTransform(tf::StampedTransform(tr,ros::Time::now(),"move3d_origin","/move3d_dbg/base"));
-    for (typeof(joints.begin()) it=joints.begin();it!=joints.end();it++){
+    _tf_br->sendTransform(tf::StampedTransform(tr,ros::Time::now(),"move4d_origin","/move4d_dbg/base"));
+    for (auto  it=joints.begin();it!=joints.end();it++){
         tf::Transform tr;
         tr.setFromOpenGLMatrix(it->second.data());
-        _tf_br->sendTransform(tf::StampedTransform(tr,ros::Time::now(),"move3d_origin","/move3d_dbg/"+it->first));
+        _tf_br->sendTransform(tf::StampedTransform(tr,ros::Time::now(),"move4d_origin","/move4d_dbg/"+it->first));
     }
 
 
@@ -80,7 +81,7 @@ bool HeadHandUpdater::computeConf(Robot *h, const Eigen::Affine3d &base, const s
             updateFreeFlyer(q,joint->getIndexOfFirstDof(),rel_pos_torso);
             tf::Transform tr;
             tr.setFromOpenGLMatrix(rel_pos_torso.data());
-            _tf_br->sendTransform(tf::StampedTransform(tr,ros::Time::now(),"/move3d_dbg/base","/move3d_dbg/"+joint->getName()));
+            _tf_br->sendTransform(tf::StampedTransform(tr,ros::Time::now(),"/move4d_dbg/base","/move4d_dbg/"+joint->getName()));
             //reset Rx and Ry
             q[joint->getIndexOfFirstDof()+3]=0;
             q[joint->getIndexOfFirstDof()+4]=0;
@@ -99,7 +100,7 @@ bool HeadHandUpdater::computeConf(Robot *h, const Eigen::Affine3d &base, const s
             updateFreeFlyer(q,joint->getIndexOfFirstDof(),rel_pos_head);
             tf::Transform tr;
             tr.setFromOpenGLMatrix(rel_pos_head.data());
-            _tf_br->sendTransform(tf::StampedTransform(tr,ros::Time::now(),"/move3d_dbg/"+torsojoint_name,"/move3d_dbg/"+joint->getName()));
+            _tf_br->sendTransform(tf::StampedTransform(tr,ros::Time::now(),"/move4d_dbg/"+torsojoint_name,"/move4d_dbg/"+joint->getName()));
             assert(rel_pos_head.translation().norm() <0.00001);
         }else{
             ok=false;
@@ -136,7 +137,7 @@ bool HeadHandUpdater::getBothJoints(Robot *h, const std::map<std::string, Eigen:
         jnt=h->getJoint(m3d_name);
         if(!jnt){
             ok=false;
-            ROS_WARN("Human model %s has no joint named %s in move3d",h->getName().c_str(),m3d_name.c_str());
+            ROS_WARN("Human model %s has no joint named %s in move4d",h->getName().c_str(),m3d_name.c_str());
         }
     }
     if(ok){
@@ -160,8 +161,8 @@ bool HeadHandUpdater::updateFreeFlyer(RobotState &q, uint first_dof_index, const
     // tr.setRotation(tfq);
     // tr.setOrigin(tf::Vector3(pos.translation()[0],pos.translation()[1],pos.translation()[2]));
     // uint dummy;
-    // tf_br.sendTransform(tf::StampedTransform(tr,ros::Time::now(),"move3d_origin","/move3d_dbg/"+q.getRobot()->getJointAt(first_dof_index,dummy)->getName()));
+    // tf_br.sendTransform(tf::StampedTransform(tr,ros::Time::now(),"move4d_origin","/move4d_dbg/"+q.getRobot()->getJointAt(first_dof_index,dummy)->getName()));
 }
 
-} // namespace move3d
+} // namespace move4d
 

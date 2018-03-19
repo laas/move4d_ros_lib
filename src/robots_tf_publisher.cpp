@@ -1,11 +1,11 @@
-#include "move3d_ros_lib/robots_tf_publisher.h"
-#include "move3d_ros_lib/scenemanager.h"
+#include "move4d_ros_lib/robots_tf_publisher.h"
+#include "move4d_ros_lib/scenemanager.h"
 
-#include <libmove3d/planners/API/project.hpp>
-#include <libmove3d/planners/API/scene.hpp>
-#include <libmove3d/planners/API/Device/robot.hpp>
-#include <libmove3d/planners/API/Device/joint.hpp>
-#include <libmove3d/include/P3d-pkg.h>
+#include <move4d/API/project.hpp>
+#include <move4d/API/scene.hpp>
+#include <move4d/API/Device/robot.hpp>
+#include <move4d/API/Device/joint.hpp>
+//#include <libmove3d/include/P3d-pkg.h>
 
 
 #include <ros/ros.h>
@@ -19,7 +19,7 @@
 
 using namespace std;
 
-namespace move3d {
+namespace move4d {
 
 RobotsTfPublisher::RobotsTfPublisher(SceneManager *scMgr, ros::NodeHandle *nh):
     _scMgr(scMgr), _nh(nh)
@@ -42,7 +42,7 @@ bool RobotsTfPublisher::publishTf(const std::vector<std::string> &names,const ro
         }
 
     }
-
+    return true;
 }
 
 bool RobotsTfPublisher::publishTf(Robot *r, const ros::Time &date)
@@ -50,19 +50,19 @@ bool RobotsTfPublisher::publishTf(Robot *r, const ros::Time &date)
     if(!r) return false;
 
     tf::Transform t;
-    int count(0);
+    //int count(0);
     for(uint i=0;i<r->getNumberOfJoints();++i){
         Joint *jnt=r->getJoint(i);
         Eigen::Affine3d pos=jnt->getMatrixPos();
         t.setFromOpenGLMatrix(pos.data());
-        count += r->getRobotStruct()->joints[i]->n_link_jnt+r->getRobotStruct()->joints[i]->n_link_jnt_owned;
-        string body_name(r->getRobotStruct()->joints[i+1]->o->name);
-        body_name[body_name.find_first_of(".")]='/';
-        //_tf_br->sendTransform(tf::StampedTransform(t,date,"move3d_origin",r->getName()+"/"+jnt->getName()));
-        _tf_br->sendTransform(tf::StampedTransform(t,date,"move3d_origin",body_name));
+        //count += r->getRobotStruct()->joints[i]->n_link_jnt+r->getRobotStruct()->joints[i]->n_link_jnt_owned;
+        //string body_name(r->getRobotStruct()->joints[i+1]->o->name);
+        //body_name[body_name.find_first_of(".")]='/';
+        _tf_br->sendTransform(tf::StampedTransform(t,date,"move4d_origin",r->getName()+"/"+jnt->getName()));
+        //_tf_br->sendTransform(tf::StampedTransform(t,date,"move4d_origin",body_name));
     }
 }
 
 
-} // namespace move3d
+} // namespace move4d
 

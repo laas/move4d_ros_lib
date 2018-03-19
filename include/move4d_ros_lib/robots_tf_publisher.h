@@ -8,15 +8,15 @@
 namespace ros{
 class NodeHandle;
 }
+namespace move4d {
 class Robot;
-namespace move3d {
 
 class SceneManager;
 
 /**
  * @brief The RobotsTfPublisher class publishes tf for robots in the scene uppon request
  *
- * The tf published are named <move3d_robot_name>/<move3d_link_name>
+ * The tf published are named <move4d_robot_name>/<move4d_link_name>
  */
 class RobotsTfPublisher
 {
@@ -35,17 +35,17 @@ public:
      * @param date date used in the tf header stamp
      * @return
      *
-     * Uses the *current* world state inside move3d scene. date parameter is used only
+     * Uses the *current* world state inside move4d scene. date parameter is used only
      * for stamping the transforms sent to the broadcaster
      */
     bool publishTf(const std::vector<std::string > &names, const ros::Time &date);
     /**
-     * @brief publish tf for a single move3d robot object
-     * @param r pointer to the move3d robot
+     * @brief publish tf for a single move4d robot object
+     * @param r pointer to the move4d robot
      * @param date date used in the tf header stamp
      * @return
      *
-     * Uses the *current* world state inside move3d scene. date parameter is used only
+     * Uses the *current* world state inside move4d scene. date parameter is used only
      * for stamping the transforms sent to the broadcaster
      */
     bool publishTf(Robot *r, const ros::Time &date);
@@ -56,6 +56,6 @@ private:
     tf::TransformBroadcaster *_tf_br;
 };
 
-} // namespace move3d
+} // namespace move4d
 
 #endif // MOVE3D_ROBOTSTFPUBLISHER_H

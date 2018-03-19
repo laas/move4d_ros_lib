@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(move3d_ros_lib)
+project(move4d_ros_lib)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/Modules/")
 FIND_PACKAGE (PkgConfig REQUIRED)
+
+set (CMAKE_CXX_FLAGS "-std=c++11 -Wall ${CMAKE_CXX_FLAGS}")
 
 IF(UNIX)
   ADD_DEFINITIONS(-DUNIX)
@@ -19,7 +21,6 @@ ENDIF(UNIX)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  toaster_msgs
   message_generation
   pluginlib
   tf
@@ -31,15 +32,15 @@ find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
 
-FIND_PACKAGE(MOVE3D-PLANNERS REQUIRED)
-INCLUDE_directories(${MOVE3D-PLANNERS_INCLUDE_DIR})
-LINK_DIRECTORIES( ${MOVE3D-PLANNERS_LIBRARY_DIRS} )
-SET(LIBS ${LIBS} ${MOVE3D-PLANNERS_LIBRARIES})
+FIND_PACKAGE(move4d REQUIRED)
+#INCLUDE_directories(${MOVE3D-PLANNERS_INCLUDE_DIR})
+#LINK_DIRECTORIES( ${MOVE3D-PLANNERS_LIBRARY_DIRS} )
+#SET(LIBS ${LIBS} ${MOVE3D-PLANNERS_LIBRARIES})
 
-PKG_CHECK_MODULES(MOVE3D REQUIRED libmove3d)
-INCLUDE_directories(${MOVE3D_INCLUDE_DIRS})
-LINK_DIRECTORIES(${MOVE3D_LIBRARY_DIRS} )
-SET(LIBS ${LIBS} ${MOVE3D_LIBRARIES})
+#PKG_CHECK_MODULES(MOVE3D REQUIRED libmove3d)
+#INCLUDE_directories(${MOVE3D_INCLUDE_DIRS})
+#LINK_DIRECTORIES(${MOVE3D_LIBRARY_DIRS} )
+SET(LIBS ${LIBS} move4d)
 
 include_directories(${INCLUDE_DIRS})
 
@@ -63,10 +64,11 @@ add_definitions(-DUSE_LIGHT_PLANNER -DUSE_GRASP_PLANNING)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES move3d_ros_lib move3d_human_updater_default_plugins move3d_human_updater_hand_head_plugin
-  CATKIN_DEPENDS toaster_msgs message_runtime
+  LIBRARIES move4d_ros_lib move4d_human_updater_default_plugins move4d_human_updater_hand_head_plugin
+  CATKIN_DEPENDS message_runtime
   #DEPENDS MOVE3D-PLANNERS libmove3d
   DEPENDS Eigen3 Boost
+  INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR}
 )
 
 ###########
@@ -82,8 +84,8 @@ include_directories(
     )
 
 ## Declare a C++ library
-add_library(move3d_ros_lib
-  src/move3d_ros_lib.cpp
+add_library(move4d_ros_lib
+  src/move4d_ros_lib.cpp
   src/scenemanager.cpp
   src/savescenariosrv.cpp
   src/humanmgr.cpp
@@ -91,36 +93,36 @@ add_library(move3d_ros_lib
   src/tools.cpp
 )
 
-add_library(move3d_human_updater_default_plugins
+add_library(move4d_human_updater_default_plugins
   src/plugins/single_joint_2d_updater.cpp
 )
 
-add_library(move3d_human_updater_hand_head_plugin
+add_library(move4d_human_updater_hand_head_plugin
   src/plugins/head_hand_updater.cpp
 )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-add_dependencies(move3d_ros_lib ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(move4d_ros_lib ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(move3d_ros_lib_node src/move3d_ros_lib_node.cpp)
+# add_executable(move4d_ros_lib_node src/move4d_ros_lib_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(move3d_ros_lib_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(move4d_ros_lib_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(move3d_ros_lib
+target_link_libraries(move4d_ros_lib
   ${catkin_LIBRARIES}
   ${LIBS}
 )
-target_link_libraries(move3d_human_updater_default_plugins
+target_link_libraries(move4d_human_updater_default_plugins
   ${catkin_LIBRARIES}
   ${LIBS}
 )
-target_link_libraries(move3d_human_updater_hand_head_plugin
+target_link_libraries(move4d_human_updater_hand_head_plugin
   ${catkin_LIBRARIES}
   ${LIBS}
 )
@@ -144,7 +146,7 @@ message("INCLUDE_DIRS: ${INCLUDE_DIRS}")
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS move3d_ros_lib move3d_ros_lib
+install(TARGETS move4d_ros_lib move4d_ros_lib
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -168,7 +170,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_move3d_ros_lib.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_move4d_ros_lib.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

@@ -1,13 +1,13 @@
-#include "move3d_ros_lib/humanmgr.h"
+#include "move4d_ros_lib/humanmgr.h"
 
-#include "move3d_ros_lib/scenemanager.h"
-#include "move3d_ros_lib/plugins/base_human_updater.h"
+#include "move4d_ros_lib/scenemanager.h"
+#include "move4d_ros_lib/plugins/base_human_updater.h"
 
 #include <ros/ros.h>
 #include <pluginlib/class_loader.h>
 
-#include <libmove3d/planners/API/scene.hpp>
-#include <libmove3d/planners/API/project.hpp>
+#include <move4d/API/scene.hpp>
+#include <move4d/API/project.hpp>
 
 #include <boost/foreach.hpp>
 #define foreach BOOST_FOREACH
@@ -15,7 +15,7 @@
 using namespace ros;
 using namespace std;
 
-namespace move3d
+namespace move4d
 {
 
 HumanMgr::~HumanMgr()
@@ -34,10 +34,10 @@ bool HumanMgr::updateParams()
             HumanSettingsPtr set_struct;
             bool ok= _nh->getParam("human_mgmt/"+h+"/policy",policy);
             if (ok){
-                string move3d_name;
+                string move4d_name;
                 _nh->param<map<string,float> >("human_mgmt/"+h+"/data",settings,map<string,float>());//defaults to empty
-                _nh->param<string>("human_mgmt/"+h+"/move3d_name",move3d_name,h);//defaults to h
-               set_struct=boost::shared_ptr<HumanSettings>(new HumanSettings(settings,policy,move3d_name));
+                _nh->param<string>("human_mgmt/"+h+"/move4d_name",move4d_name,h);//defaults to h
+               set_struct=boost::shared_ptr<HumanSettings>(new HumanSettings(settings,policy,move4d_name));
             }else{
                 ret=false;
                 ROS_WARN("Invalid parameters for Human management of %s",h.c_str());
@@ -67,7 +67,7 @@ bool HumanMgr::updateParams()
 bool HumanMgr::loadPlugins()
 {
     _updaters.clear();
-    _human_updater_loader = new pluginlib::ClassLoader<BaseHumanUpdater>("move3d_ros_lib","move3d::BaseHumanUpdater");
+    _human_updater_loader = new pluginlib::ClassLoader<BaseHumanUpdater>("move4d_ros_lib","move4d::BaseHumanUpdater");
     vector<string> list = _human_updater_loader->getDeclaredClasses();
     foreach (string plug,list){
         ROS_INFO("available plugin %s",plug.c_str());
@@ -98,10 +98,10 @@ bool HumanMgr::setHumanPos(const std::string &name,const Eigen::Affine3d &base, 
     Robot *h;
     if(ok){
 
-        h=_scMgr->project()->getActiveScene()->getRobotByName(settings->move3d_name);
+        h=_scMgr->project()->getActiveScene()->getRobotByName(settings->move4d_name);
         if(!h){
             ok=false;
-            ROS_WARN("No human named %s in move3d scene.",settings->move3d_name.c_str());
+            ROS_WARN("No human named %s in move4d scene.",settings->move4d_name.c_str());
         }
     }
     if(ok){

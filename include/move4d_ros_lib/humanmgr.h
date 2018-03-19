@@ -14,7 +14,7 @@ namespace pluginlib{
 template<class T>
 class ClassLoader;
 }
-namespace move3d{
+namespace move4d{
 
 class SceneManager;
 class BaseHumanUpdater;
@@ -28,9 +28,9 @@ typedef boost::shared_ptr<HumanSettings> HumanSettingsPtr;
  * @brief The HumanMgr class updates human configuration based on plugins
  *
  * The representation of humans can vary a lot between systems, according to sensors used and information needed.
- * move3d_ros_lib uses a plugin system to manage the conversion from the input data to a full configuration usable inside move3d.
+ * move4d_ros_lib uses a plugin system to manage the conversion from the input data to a full configuration usable inside move4d.
  *
- * The motivation of the HumanMgr is that most often we don't know the configuration of humans from sensors, but in move3d we may need to
+ * The motivation of the HumanMgr is that most often we don't know the configuration of humans from sensors, but in move4d we may need to
  * infer them in order to do some computations (costs, affordances, collisions,...). The HumanMgr allows one to specify how a specific human
  * have to be handled. Plus, the plugin architecture allows a developper to add a different policy fiting its specific needs.
  */
@@ -49,7 +49,7 @@ public:
      * @return true if the parameter could be parsed successfully
      *
      * searches in the nh namespace a dictionary called "human_mgmt". Its key are human names (in ROS, i.e. in the input) and data is another dictionary containing the following fields:
-     * * move3d_name: the name of the human in move3d (p3d), it can be different from the ROS name
+     * * move4d_name: the name of the human in move4d (p3d), it can be different from the ROS name
      * * policy: the name of the plugin to use
      * * data: a dictionary of floats given to the plugin. It contains user set parameters
      */
@@ -61,7 +61,7 @@ public:
     bool loadPlugins();
 
     /**
-     * @brief update a human configuration in move3d
+     * @brief update a human configuration in move4d
      * @param name input (ROS) human name, the key of the human_mgmt dictionary in ROS parameter server
      * @param base position of the base (1st joint), used only by the corresponding plugin
      * @param joints joint positions, used only by the plugin

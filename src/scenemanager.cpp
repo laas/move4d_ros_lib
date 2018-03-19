@@ -1,29 +1,27 @@
-#include "move3d_ros_lib/scenemanager.h"
-#include "move3d_ros_lib/humanmgr.h"
-#include "move3d_ros_lib/tools.h"
+#undef QT_LIBRARY
+#include "move4d_ros_lib/scenemanager.h"
+#include "move4d_ros_lib/humanmgr.h"
+#include "move4d_ros_lib/tools.h"
+#include "move4d_ros_lib/logging.hpp"
 
-#include <libmove3d/planners/API/project.hpp>
 #include <ros/ros.h>
-#include <libmove3d/planners/API/scene.hpp>
-#include <libmove3d/planners/API/Device/robot.hpp>
-#include <libmove3d/planners/API/ConfigSpace/RobotState.hpp>
-#include <libmove3d/planners/API/Device/joint.hpp>
+#include <move4d/API/project.hpp>
+#include <move4d/API/scene.hpp>
+#include <move4d/API/Device/robot.hpp>
+#include <move4d/API/ConfigSpace/RobotState.hpp>
+#include <move4d/API/Device/joint.hpp>
+#include <move4d/utils/Geometry.h>
+#include <move4d/database/semantics/Sem_AgentType.hpp>
 #include <tf/tf.h>
 #include <Eigen/Geometry>
 #include <sstream>
-#include <libmove3d/planners/utils/Geometry.h>
-#include <libmove3d/planners/database/semantics/Sem_AgentType.hpp>
-//#include <libmove3d/p3d/proto/p3d_rw_scenario_proto.h>
-//#include <libmove3d/include/device.h>
-#include <libmove3d/include/Collision-pkg.h>
-#include <libmove3d/include/P3d-pkg.h>
 
 #include <boost/foreach.hpp>
 #define foreach BOOST_FOREACH
 
-int indexOfDof(Robot *r,const std::string &dof_name){
+int indexOfDof(move4d::Robot *r,const std::string &dof_name){
     for(unsigned int j=0;j<=r->getNumberOfJoints();j++){
-        Joint *joint=r->getJoint(j);
+        move4d::Joint *joint=r->getJoint(j);
         if(joint->getName().find(dof_name) == 0){
             if(joint->getNumberOfDof() == 1){
                 return joint->getIndexOfFirstDof();
@@ -53,7 +51,7 @@ Eigen::Affine3d pose2affine(const geometry_msgs::Pose &pose){
     return aff;
 }
 
-namespace move3d
+namespace move4d
 {
 SceneManager::SceneManager(ros::NodeHandle *nh):
     _nh(nh),_p3dPath(""),_scePath(""), _project(0), _updateAcceptBaseOnly(0)
@@ -93,23 +91,7 @@ bool SceneManager::createScene()
         _project=NULL;
     }
     if(ok){
-        p3d_col_set_mode(p3d_col_mode_none);
-        p3d_read_desc(_p3dPath.c_str());
-        p3d_col_set_mode(p3d_col_mode_pqp);
-        p3d_col_start(p3d_col_mode_pqp);
-        if(_scePath.size()){
-            ROS_INFO("loading sce file %s",_scePath.c_str());
-            p3d_read_scenario(_scePath.c_str());
-        }
-        global_Project = new Project(new Scene(XYZ_ENV));
-        foreach(const std::string &n,_modules_to_activ){
-            global_Project->addModule(n);
-        }
-        ok=global_Project->init();
-        for(uint i=0;i<global_Project->getActiveScene()->getNumberOfRobots();i++){
-            Robot *r=global_Project->getActiveScene()->getRobot(i);
-            r->setAndUpdate(*r->getInitialPosition());
-        }
+        _project=Project::createGlobalProject(_p3dPath,_scePath,std::vector<std::string>(_modules_to_activ.begin(),_modules_to_activ.end()));
     }
     if(ok){
         _project=global_Project;
@@ -291,7 +273,7 @@ bool SceneManager::fetchDofCorrespParam(const std::string &base_param_name)
     for(unsigned int i=0;i<project()->getActiveScene()->getNumberOfRobots();++i){
         Robot *r=project()->getActiveScene()->getRobot(i);
         if(r->isAgent() && r->getHriAgent()){
-            std::string type=Sem::AgentType::agentTypeToString(r->getHriAgent()->type);
+            std::string type=r->getHriAgent()->type();
             if(!fetchDofCorrespParam(base_param_name+"/"+type,r->getName()) && !fetchDofCorrespParam(base_param_name+"/"+r->getName(),r->getName())){
                 ROS_WARN("no parameter %s/%s found for DoF correspondances for robot %s (nor %s/%s)",base_param_name.c_str(),r->getName().c_str(),r->getName().c_str(),base_param_name.c_str(),type.c_str());
             }
@@ -341,7 +323,8 @@ void SceneManager::setDofCorresp(const std::string &robot_name, const std::map<s
 void SceneManager::preInit()
 {
     //init move3d logger
-    logm3d::initializePlannerLogger();
+    //logm3d::initializePlannerLogger();
+    logm3d::setOutputHandler(new move4d::logm3d::OutputHandlerROS());
 }
 std::string SceneManager::scePath() const
 {
@@ -397,16 +380,9 @@ void SceneManager::setP3dPath(const std::string &p3dPath)
 
 bool SceneManager::saveScenario(const std::string &path)
 {
-    for(unsigned int i=0;i<_project->getActiveScene()->getNumberOfRobots();++i){
-        Robot *r=_project->getActiveScene()->getRobot(i);
-        p3d_copy_config_into(r->getRobotStruct(),r->getCurrentPos()->getConfigStruct(),&(r->getRobotStruct()->ROBOT_POS) );
-    }
     ROS_INFO("Saving scenario in %s",path.c_str());
-    p3d_rw_scenario_init_name();
-    bool ok = p3d_save_scenario(path.c_str());
-    if(!ok)
-        ROS_ERROR("failed to save scenario");
-    return ok;
+    project()->getActiveScene()->saveScenario(path);
+    return true;
 }
 Project *SceneManager::project() const
 {

@@ -1,17 +1,17 @@
-#include "move3d_ros_lib/plugins/single_joint_2d_updater.h"
+#include "move4d_ros_lib/plugins/single_joint_2d_updater.h"
 
-#include <libmove3d/planners/API/Device/robot.hpp>
-#include <libmove3d/planners/API/Device/joint.hpp>
-#include <libmove3d/planners/API/ConfigSpace/RobotState.hpp>
+#include <move4d/API/Device/robot.hpp>
+#include <move4d/API/Device/joint.hpp>
+#include <move4d/API/ConfigSpace/RobotState.hpp>
 
 #include <pluginlib/class_list_macros.h>
 
 #include <ros/ros.h>
 
 
-PLUGINLIB_EXPORT_CLASS(move3d::SingleJoint2dUpdater, move3d::BaseHumanUpdater)
+PLUGINLIB_EXPORT_CLASS(move4d::SingleJoint2dUpdater, move4d::BaseHumanUpdater)
 
-namespace move3d {
+namespace move4d {
 
 SingleJoint2dUpdater::SingleJoint2dUpdater():BaseHumanUpdater()
 {
@@ -36,7 +36,7 @@ bool SingleJoint2dUpdater::computeConf(Robot *h, const Eigen::Affine3d &base, co
     bool ok=true;
     q = *h->getCurrentPos();
     std::string torsojoint = "base_torso";
-    if(h->getHriAgent()->type==HRI_HERAKLES){
+    if(h->getHriAgent()->type()=="HRI_HERAKLES"){
         torsojoint="Pelvis";
     }
     for(uint i=0;i<3;i++){
@@ -63,5 +63,5 @@ bool SingleJoint2dUpdater::computeConf(Robot *h, const Eigen::Affine3d &base, co
     return ok;
 }
 
-} // namespace move3d
+} // namespace move4d
 

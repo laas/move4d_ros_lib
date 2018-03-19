@@ -1,11 +1,11 @@
-#include "move3d_ros_lib/tools.h"
+#include "move4d_ros_lib/tools.h"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/algorithm/string/find.hpp>
 #include <ros/rosout_appender.h>
 #include <ros/package.h>
 
-namespace move3d{
+namespace move4d{
 namespace Tools {
 
 std::string getPath(const std::string &url )
