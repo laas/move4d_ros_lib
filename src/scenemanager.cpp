@@ -5,6 +5,9 @@
 #include "move4d_ros_lib/logging.hpp"
 #include "move4d_ros_lib/plugins.hpp"
 
+#include <move4d/API/Parameter.hpp>
+
+#include <boost/filesystem.hpp>
 #include <ros/ros.h>
 #include <move4d/API/project.hpp>
 #include <move4d/API/scene.hpp>
@@ -92,6 +95,11 @@ bool SceneManager::createScene()
         _project=NULL;
     }
     if(ok){
+        boost::filesystem::path p(_p3dPath);
+        p=p.parent_path();
+        p/= "data";
+        API::Parameter::param("database/path",p.string()+"/");
+        ROS_INFO("Parameter database/path = %s",p.string().c_str());
         _project=Project::createGlobalProject(_p3dPath,_scePath,std::vector<std::string>(_modules_to_activ.begin(),_modules_to_activ.end()), plugins_found_at_compile());
     }
     if(ok){
