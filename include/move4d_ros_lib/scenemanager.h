@@ -27,14 +27,16 @@ public:
     /**
      * @brief default constructor
      * @param nh
+     * @param originFrame the tf frame representing the move4d world frame
      */
-    SceneManager(ros::NodeHandle *nh);
+    SceneManager(ros::NodeHandle *nh, const std::string &originFrame="/map");
     /**
      * @brief SceneManager
      * @param nh
      * @param p3d_path
+     * @param originFrame the tf frame representing the move4d world frame
      */
-    SceneManager(ros::NodeHandle *nh,const std::string &p3d_path);
+    SceneManager(ros::NodeHandle *nh,const std::string &p3d_path, const std::string &originFrame="/map");
 
     ~SceneManager();
 
@@ -239,6 +241,9 @@ public:
     typedef std::map<std::string,UintMap_t> JointCorrespIndex_t;
 
 
+    std::string getOriginTfFrame() const;
+    void setOriginTfFrame(const std::string &originTfFrame);
+
 private:
     /// called in the constructor only
     void preInit();
@@ -255,6 +260,7 @@ private:
 
     HumanMgr *_humanMgr;
 
+    std::string _originTfFrame; ///< the frame representing the move4d world frame
     Eigen::Affine3d _frame_transform;
 
     bool _updateAcceptBaseOnly;
