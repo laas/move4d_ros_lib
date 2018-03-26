@@ -1,0 +1,17 @@
+#include "move4d_ros_lib/plugins.hpp"
+
+std::vector<std::string> plugins_found_at_compile(){
+    std::string raw= "@MOVE4D_PLUGINS_LIBRARIES@";
+    std::vector<std::string> ret;
+    size_t p = 0;
+    unsigned int imax=100;
+    unsigned int i(0);
+    while(p<raw.size() && ++i<imax){
+        size_t np=raw.find_first_of(";",p);
+        ret.push_back(raw.substr(p,np));
+        if(np>raw.size()) break;
+        p=np+1;
+    }
+
+    return ret;
+}

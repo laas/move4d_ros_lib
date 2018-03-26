@@ -3,6 +3,7 @@
 #include "move4d_ros_lib/humanmgr.h"
 #include "move4d_ros_lib/tools.h"
 #include "move4d_ros_lib/logging.hpp"
+#include "move4d_ros_lib/plugins.hpp"
 
 #include <ros/ros.h>
 #include <move4d/API/project.hpp>
@@ -91,7 +92,7 @@ bool SceneManager::createScene()
         _project=NULL;
     }
     if(ok){
-        _project=Project::createGlobalProject(_p3dPath,_scePath,std::vector<std::string>(_modules_to_activ.begin(),_modules_to_activ.end()));
+        _project=Project::createGlobalProject(_p3dPath,_scePath,std::vector<std::string>(_modules_to_activ.begin(),_modules_to_activ.end()), plugins_found_at_compile());
     }
     if(ok){
         _project=global_Project;

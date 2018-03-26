@@ -33,14 +33,20 @@ find_package(Eigen3 REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
 
 FIND_PACKAGE(move4d REQUIRED)
-#INCLUDE_directories(${MOVE3D-PLANNERS_INCLUDE_DIR})
-#LINK_DIRECTORIES( ${MOVE3D-PLANNERS_LIBRARY_DIRS} )
-#SET(LIBS ${LIBS} ${MOVE3D-PLANNERS_LIBRARIES})
 
 #PKG_CHECK_MODULES(MOVE3D REQUIRED libmove3d)
 #INCLUDE_directories(${MOVE3D_INCLUDE_DIRS})
 #LINK_DIRECTORIES(${MOVE3D_LIBRARY_DIRS} )
+
 SET(LIBS ${LIBS} move4d)
+find_library(MOVE4D_VISIBILITY_PLANNER move4d-visibility-grid)
+if(NOT MOVE4D_VISIBILITY_PLANNER)
+    message(SEND_ERROR "move4d-visibility-grid library (plugin) not found")
+else()
+    message("link with ${MOVE4D_VISIBILITY_PLANNER}")
+endif()
+
+SET(MOVE4D_PLUGINS_LIBRARIES ${MOVE4D_PLUGINS_LIBRARIES} ${MOVE4D_VISIBILITY_PLANNER})
 
 include_directories(${INCLUDE_DIRS})
 
@@ -83,6 +89,7 @@ include_directories(
     ${INCLUDE_DIRS}
     )
 
+configure_file(cmake/templates/plugins.cpp.in src/plugins.cpp @ONLY)
 ## Declare a C++ library
 add_library(move4d_ros_lib
   src/move4d_ros_lib.cpp
@@ -92,6 +99,7 @@ add_library(move4d_ros_lib
   src/robots_tf_publisher.cpp
   src/tools.cpp
   src/logging.cpp
+  src/plugins.cpp
 )
 
 add_library(move4d_human_updater_default_plugins
