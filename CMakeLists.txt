@@ -96,6 +96,7 @@ add_library(move4d_ros_lib
   src/scenemanager.cpp
   src/savescenariosrv.cpp
   src/jointstateupdater.cpp
+  src/tfupdater.cpp
   src/humanmgr.cpp
   src/robots_tf_publisher.cpp
   src/tools.cpp
