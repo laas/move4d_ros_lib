@@ -58,13 +58,15 @@ Eigen::Affine3d pose2affine(const geometry_msgs::Pose &pose){
 namespace move4d
 {
 SceneManager::SceneManager(ros::NodeHandle *nh, const std::string &originFrame):
-    _nh(nh),_p3dPath(""),_scePath(""), _project(0), _originTfFrame(originFrame), _updateAcceptBaseOnly(0)
+    _nh(nh),_p3dPath(""),_scePath(""), _project(0), _originTfFrame(originFrame), _updateAcceptBaseOnly(0),
+    _tfListener(_tfBuffer)
 {
     preInit();
 }
 
 SceneManager::SceneManager(ros::NodeHandle *nh, const std::string &p3d_path, const std::string &originFrame):
-    _nh(nh),_p3dPath(p3d_path),_scePath(""), _project(0), _originTfFrame(originFrame), _updateAcceptBaseOnly(0)
+    _nh(nh),_p3dPath(p3d_path),_scePath(""), _project(0), _originTfFrame(originFrame), _updateAcceptBaseOnly(0),
+    _tfListener(_tfBuffer)
 {
     _frame_transform = Eigen::Affine3d();
     preInit();
@@ -334,6 +336,11 @@ void SceneManager::preInit()
     //init move3d logger
     //logm3d::initializePlannerLogger();
     logm3d::setOutputHandler(new move4d::logm3d::OutputHandlerROS());
+}
+
+tf2_ros::Buffer &SceneManager::getTfBuffer()
+{
+    return _tfBuffer;
 }
 
 std::string SceneManager::getOriginTfFrame() const

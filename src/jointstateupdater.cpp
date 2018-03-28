@@ -34,17 +34,15 @@ void JointStateUpdater::update(const sensor_msgs::JointState &joint_state, const
 
 void JointStateUpdater::updateFromTopic()
 {
-    tf::StampedTransform transform;
-    _listener.lookupTransform(_robot_frame,_scMgr->getOriginTfFrame(),ros::Time(0),transform);
+    geometry_msgs::TransformStamped transform;
+    transform = _scMgr->getTfBuffer().lookupTransform(_robot_frame,_scMgr->getOriginTfFrame(),ros::Time(0));
 
-    geometry_msgs::Transform msg;
-    tf::transformTFToMsg(transform,msg);
     geometry_msgs::Pose pose;
 
-    pose.orientation= msg.rotation;
-    pose.position.x = msg.translation.x;
-    pose.position.y = msg.translation.y;
-    pose.position.z = msg.translation.z;
+    pose.orientation= transform.transform.rotation;
+    pose.position.x = transform.transform.translation.x;
+    pose.position.y = transform.transform.translation.y;
+    pose.position.z = transform.transform.translation.z;
 
     _lock.lock();
     update(*_lastJointState,pose);

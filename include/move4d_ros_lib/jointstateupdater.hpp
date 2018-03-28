@@ -7,7 +7,7 @@
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Accel.h>
-#include <tf/transform_listener.h>
+#include <tf2_ros/transform_listener.h>
 #include <mutex>
 
 namespace move4d {
@@ -46,7 +46,6 @@ private:
     std::string _robot_frame;
     std::string _topic;
     ros::Subscriber _subscriber;
-    tf::TransformListener _listener;
     bool _updateOnReceive=false;
 
     sensor_msgs::JointStateConstPtr _lastJointState;

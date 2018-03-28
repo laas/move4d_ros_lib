@@ -7,6 +7,7 @@
 #include <Eigen/Geometry>
 #include <ros/ros.h>
 #include <geometry_msgs/Pose.h>
+#include <tf2_ros/transform_listener.h>
 
 /**
  * @namespace move4d
@@ -29,14 +30,14 @@ public:
      * @param nh
      * @param originFrame the tf frame representing the move4d world frame
      */
-    SceneManager(ros::NodeHandle *nh, const std::string &originFrame="/map");
+    SceneManager(ros::NodeHandle *nh, const std::string &originFrame="map");
     /**
      * @brief SceneManager
      * @param nh
      * @param p3d_path
      * @param originFrame the tf frame representing the move4d world frame
      */
-    SceneManager(ros::NodeHandle *nh,const std::string &p3d_path, const std::string &originFrame="/map");
+    SceneManager(ros::NodeHandle *nh,const std::string &p3d_path, const std::string &originFrame="map");
 
     ~SceneManager();
 
@@ -244,6 +245,8 @@ public:
     std::string getOriginTfFrame() const;
     void setOriginTfFrame(const std::string &originTfFrame);
 
+    tf2_ros::Buffer &getTfBuffer();
+
 private:
     /// called in the constructor only
     void preInit();
@@ -264,6 +267,9 @@ private:
     Eigen::Affine3d _frame_transform;
 
     bool _updateAcceptBaseOnly;
+
+    tf2_ros::Buffer _tfBuffer;
+    tf2_ros::TransformListener _tfListener;
 
 };
 
