@@ -20,6 +20,7 @@ JointStateUpdater::JointStateUpdater(SceneManager *scMgr, ros::NodeHandle &nh,
     if(!scMgr->project()->getActiveScene()->getRobotByName(_robot_name)){
         throw std::invalid_argument("move4d::JointStateUpdater: no robot named "+robot_name);
     }
+    _subscribe();
 }
 
 //void JointStateUpdater::update(const sensor_msgs::JointState &joint_state, const geometry_msgs::Pose &pose, const geometry_msgs::Twist &twist, const geometry_msgs::Accel &accel)
