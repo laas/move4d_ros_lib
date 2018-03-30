@@ -221,8 +221,15 @@ bool SceneManager::setDofNameOrdered(const std::string &robot_name, const std::v
     JointCorrespName_t::const_iterator corresp_names_it = _jointCorrespNames.find(robot_name);
     bool ok(1);
     if(corresp_names_it == _jointCorrespNames.end()){
-        ROS_ERROR("no joint correspondances set for robot %s.",robot_name.c_str());
-        ok=false;
+        ROS_WARN("no joint correspondances set for robot %s.",robot_name.c_str());
+        ROS_INFO("try with same names");
+        NameMap_t corr;
+        for(auto n : dof_names){
+            corr[n]=n;
+        }
+        corresp_names_it = _jointCorrespNames.insert(corresp_names_it,{robot_name,corr});
+        ok=true;
+        //ok=false;
     }
     if(ok && !_project){
         ok=false;
