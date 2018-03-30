@@ -1,12 +1,15 @@
 <class_libraries>
-    <library path="libmove3d_human_updater_default_plugins">
-      <class type="move3d::SingleJoint2dUpdater" base_class_type="move3d::BaseHumanUpdater">
-        <description>This class updates from a single joint + height (parameter) to a "rayman"-style human in Move3d</description>
+    <library path="libmove4d_human_updater_default_plugins">
+      <class type="move4d::SingleJoint2dUpdater" base_class_type="move4d::BaseHumanUpdater">
+        <description>This class updates from a single joint + height (parameter) to a "rayman"-style human in Move4d</description>
+      </class>
+      <class type="move4d::GazeUpdater" base_class_type="move4d::BaseHumanUpdater">
+        <description>The class updates from a gaze joint position to a base+gaze position</description>
       </class>
     </library>
-    <library path="libmove3d_human_updater_hand_head_plugin">
-      <class type="move3d::HeadHandUpdater" base_class_type="move3d::BaseHumanUpdater">
-        <description>This class updates from 2 poses representing the head and the right hand to a "rayman"-style human in Move3d</description>
+    <library path="libmove4d_human_updater_hand_head_plugin">
+      <class type="move4d::HeadHandUpdater" base_class_type="move4d::BaseHumanUpdater">
+        <description>This class updates from 2 poses representing the head and the right hand to a "rayman"-style human in Move4d</description>
       </class>
     </library>
 </class_libraries>

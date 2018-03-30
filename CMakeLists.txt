@@ -106,6 +106,7 @@ add_library(move4d_ros_lib
 
 add_library(move4d_human_updater_default_plugins
   src/plugins/single_joint_2d_updater.cpp
+  src/plugins/gaze_updater.cpp
 )
 
 add_library(move4d_human_updater_hand_head_plugin
