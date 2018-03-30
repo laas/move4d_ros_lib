@@ -43,7 +43,7 @@ geometry_msgs::Pose TfUpdater::getPoseFromTf(const std::string &name)
     geometry_msgs::TransformStamped transform;
     geometry_msgs::Pose pose;
 
-    transform = _scMgr->getTfBuffer().lookupTransform(name,_scMgr->getOriginTfFrame(),ros::Time(0));
+    transform = _scMgr->getTfBuffer().lookupTransform(_scMgr->getOriginTfFrame(),name,ros::Time(0));
     pose.orientation= transform.transform.rotation;
     pose.position.x = transform.transform.translation.x;
     pose.position.y = transform.transform.translation.y;
