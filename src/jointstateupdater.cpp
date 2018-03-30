@@ -20,6 +20,7 @@ JointStateUpdater::JointStateUpdater(SceneManager *scMgr, ros::NodeHandle &nh,
     if(!scMgr->project()->getActiveScene()->getRobotByName(_robot_name)){
         throw std::invalid_argument("move4d::JointStateUpdater: no robot named "+robot_name);
     }
+    _lastJointState = sensor_msgs::JointStatePtr(new sensor_msgs::JointState());
     _subscribe();
 }
 
@@ -30,13 +31,15 @@ JointStateUpdater::JointStateUpdater(SceneManager *scMgr, ros::NodeHandle &nh,
 
 void JointStateUpdater::update(const sensor_msgs::JointState &joint_state, const geometry_msgs::Pose &pose)
 {
-    _scMgr->updateRobot(_robot_name,pose,joint_state.position);
+    _scMgr->setDofNameOrdered(_robot_name,joint_state.name);
+    bool ok=_scMgr->updateRobot(_robot_name,pose,joint_state.position);
+    if(!ok) ROS_WARN("failed to update robot %s",_robot_name.c_str());
 }
 
 void JointStateUpdater::updateFromTopic()
 {
     geometry_msgs::TransformStamped transform;
-    transform = _scMgr->getTfBuffer().lookupTransform(_robot_frame,_scMgr->getOriginTfFrame(),ros::Time(0));
+    transform = _scMgr->getTfBuffer().lookupTransform(_scMgr->getOriginTfFrame(),_robot_frame,ros::Time(0));
 
     geometry_msgs::Pose pose;
 
