@@ -50,9 +50,23 @@ bool GazeUpdater::computeConf(Robot *h, const Eigen::Affine3d &base, const std::
     for(uint i=0;i<2;i++){
         q[i+6]=base.translation()[i];
     }
-    q[3+6]=0.; //z=0
+    q[2+6]=0.; //z=0
+    //rotation
+    //compute the projection of the camera Z vector onto the env (X,Y) plane
+    Eigen::Vector3d z_gaze = base.linear() * Eigen::Vector3d::UnitZ();
+    Eigen::Vector3d z_proj = z_gaze;
+    z_gaze.z()=0.;
+    z_proj.normalize();
+    //that vector is // to the X axis of the base frame
+    //compute the rotation between current X axis of the conf base and desired one
+    Eigen::Vector3d x=Eigen::Vector3d::UnitX();
+    Eigen::Vector3d z=Eigen::Vector3d::UnitZ();
+    double angle = std::atan2((x.cross(z_proj)).dot(z),x.dot(z_proj));
+    q[5+6]=angle;
     Eigen::Affine3d base_pos,rel_gaze_pos;
-    base_pos=Eigen::Translation3d(base.translation().x(),base.translation().y(),0.);
+    //the position of the move4d base joint (3d pos + theta)
+    base_pos=Eigen::Translation3d(base.translation().x(),base.translation().y(),0.)
+            * q.getQuaternion();
     //pose of the gaze in the base frame
     rel_gaze_pos = m3dGeometry::changeFrame(base,m3dGeometry::absoluteFramePos(),base_pos);
     Eigen::Vector3d pos = rel_gaze_pos.translation();
