@@ -57,6 +57,9 @@ Eigen::Affine3d pose2affine(const geometry_msgs::Pose &pose){
 
 namespace move4d
 {
+
+SceneManager *SceneManager::__instance = nullptr;
+
 SceneManager::SceneManager(ros::NodeHandle *nh, const std::string &originFrame):
     _nh(nh),_p3dPath(""),_scePath(""), _project(0), _originTfFrame(originFrame), _updateAcceptBaseOnly(0),
     _tfListener(_tfBuffer)
@@ -74,6 +77,21 @@ SceneManager::SceneManager(ros::NodeHandle *nh, const std::string &p3d_path, con
 
 SceneManager::~SceneManager()
 {
+
+}
+
+SceneManager *SceneManager::createInstance(ros::NodeHandle *nh, const std::string &p3d_path, const std::string &originFrame)
+{
+    if(__instance) throw std::runtime_error("instance of move4d_ros_lib SceneManager already created");
+
+    __instance = new SceneManager(nh,p3d_path,originFrame);
+    return __instance;
+
+}
+
+SceneManager *SceneManager::instance()
+{
+    return __instance;
 
 }
 

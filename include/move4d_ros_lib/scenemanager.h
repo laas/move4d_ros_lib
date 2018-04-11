@@ -24,7 +24,7 @@ class HumanMgr;
  */
 class SceneManager
 {
-public:
+    static SceneManager *__instance;
     /**
      * @brief default constructor
      * @param nh
@@ -39,7 +39,11 @@ public:
      */
     SceneManager(ros::NodeHandle *nh,const std::string &p3d_path, const std::string &originFrame="map");
 
+public:
     ~SceneManager();
+
+    static SceneManager *createInstance(ros::NodeHandle *nh, const std::string &p3d_path, const std::string &originFrame="map");
+    static SceneManager *instance();
 
     /**
      * @brief add a move4d module to be initialized
