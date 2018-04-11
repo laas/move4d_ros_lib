@@ -98,6 +98,7 @@ add_library(move4d_ros_lib
   src/jointstateupdater.cpp
   src/tfupdater.cpp
   src/humanmgr.cpp
+  src/conversions.cpp
   src/robots_tf_publisher.cpp
   src/tools.cpp
   src/logging.cpp
