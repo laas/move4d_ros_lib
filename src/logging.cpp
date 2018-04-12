@@ -24,7 +24,8 @@ namespace logm3d {
     }
     void OutputHandlerROS::log(LogLevel lvl, LoggerPtr logger, const std::string& message)
     {
-        ROS_LOG(getLevel(lvl),ROSCONSOLE_DEFAULT_NAME+logger->getName(),message.c_str());
+        std::string fullName=ROSCONSOLE_DEFAULT_NAME "." +logger->getName();
+        ROS_LOG(getLevel(lvl),fullName.c_str(),"%s %s",logger->getName().c_str(),message.c_str());
     }
     bool OutputHandlerROS::isEnabledFor(LogLevel lvl, LoggerPtr logger)
     {
