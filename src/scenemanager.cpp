@@ -124,6 +124,10 @@ bool SceneManager::createScene()
     }
     if(ok){
         _project=global_Project;
+        for(uint i=0;i<_project->getActiveScene()->getNumberOfRobots();++i){
+            Robot *r=_project->getActiveScene()->getRobot(i);
+            r->setAndUpdate(*r->getInitialPosition());
+        }
     }else{
         ROS_ERROR("error on creating the move3d project");
         _project=NULL;
