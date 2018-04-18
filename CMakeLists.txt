@@ -32,13 +32,14 @@ find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
 
+find_package(libmove3d REQUIRED)
 FIND_PACKAGE(move4d REQUIRED)
 
 #PKG_CHECK_MODULES(MOVE3D REQUIRED libmove3d)
 #INCLUDE_directories(${MOVE3D_INCLUDE_DIRS})
 #LINK_DIRECTORIES(${MOVE3D_LIBRARY_DIRS} )
 
-SET(LIBS ${LIBS} move4d)
+SET(LIBS ${LIBS} move4d move3d)
 find_library(MOVE4D_VISIBILITY_PLANNER move4d-visibility-grid)
 if(NOT MOVE4D_VISIBILITY_PLANNER)
     message(SEND_ERROR "move4d-visibility-grid library (plugin) not found")
