@@ -74,7 +74,7 @@ catkin_package(
   CATKIN_DEPENDS message_runtime
   #DEPENDS MOVE3D-PLANNERS libmove3d
   DEPENDS Eigen3 Boost
-  INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR}
+  #INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR}
 )
 
 ###########
