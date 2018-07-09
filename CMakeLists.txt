@@ -32,7 +32,7 @@ find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
 
-find_package(libmove3d REQUIRED)
+find_package(move3d REQUIRED)
 FIND_PACKAGE(move4d REQUIRED)
 
 #PKG_CHECK_MODULES(MOVE3D REQUIRED libmove3d)
