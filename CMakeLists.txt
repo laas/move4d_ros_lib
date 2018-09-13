@@ -160,7 +160,7 @@ message("INCLUDE_DIRS: ${INCLUDE_DIRS}")
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS move4d_ros_lib move4d_ros_lib
+install(TARGETS move4d_ros_lib move4d_ros_lib move4d_human_updater_default_plugins move4d_human_updater_hand_head_plugin
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -173,11 +173,12 @@ install(DIRECTORY include/${PROJECT_NAME}/
 )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+install(FILES
+    default_updaters.xml
+  # myfile1
+  # myfile2
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 #############
 ## Testing ##
