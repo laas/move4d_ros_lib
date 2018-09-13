@@ -1,7 +1,10 @@
 #include "move4d_ros_lib/plugins.hpp"
+#include <cstdlib>
 
 std::vector<std::string> plugins_found_at_compile(){
-    std::string raw= "@MOVE4D_PLUGINS_LIBRARIES@";
+    char *env=std::getenv("MOVE4D_PLUGIN_LIBRARIES");
+    std::string config= "@MOVE4D_PLUGINS_LIBRARIES@";
+    std::string raw = (env ? env : config);
     std::vector<std::string> ret;
     size_t p = 0;
     unsigned int imax=100;
