@@ -40,14 +40,14 @@ FIND_PACKAGE(move4d REQUIRED)
 #LINK_DIRECTORIES(${MOVE3D_LIBRARY_DIRS} )
 
 SET(LIBS ${LIBS} move4d move3d)
-find_library(MOVE4D_VISIBILITY_PLANNER move4d-visibility-grid)
-if(NOT MOVE4D_VISIBILITY_PLANNER)
-    message(SEND_ERROR "move4d-visibility-grid library (plugin) not found")
-else()
-    message("link with ${MOVE4D_VISIBILITY_PLANNER}")
-endif()
+# find_library(MOVE4D_VISIBILITY_PLANNER move4d-visibility-grid)
+# if(NOT MOVE4D_VISIBILITY_PLANNER)
+#     message(SEND_ERROR "move4d-visibility-grid library (plugin) not found")
+# else()
+#     message("link with ${MOVE4D_VISIBILITY_PLANNER}")
+# endif()
 
-SET(MOVE4D_PLUGINS_LIBRARIES ${MOVE4D_PLUGINS_LIBRARIES} ${MOVE4D_VISIBILITY_PLANNER})
+SET(MOVE4D_PLUGINS_LIBRARIES ${MOVE4D_PLUGINS_LIBRARIES})
 
 include_directories(${INCLUDE_DIRS})
 
